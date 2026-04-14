@@ -1,4 +1,4 @@
-# Amazon Clone Backend 🚀
+# Amazon Clone Backend 
 
 A robust, production-ready Node.js & Express REST API for an Amazon Clone. Developed as part of the Scaler SDE Intern Fullstack Assignment, this backend utilizes a PostgreSQL database (Neon) and implements raw SQL querying via `pg`, Object-Oriented Controllers, and automated database seeding pulling actual product photography via Unsplash and Cloudinary.
 
@@ -202,8 +202,4 @@ npm start
 
 ---
 
-## 🔥 Key Technical Highlights
 
-1. **ACID Transaction Order Placements:** The `/orders` endpoint functions under `BEGIN...COMMIT` statements, ensuring that deducting stock limits, clearing shopping carts, creating an order wrapper row, and transferring line-item specifics never desynchronizes the database states dynamically.
-2. **OOP Paradigm Structure:** Business logics span dedicated standalone instances (e.g. `OrderController.js`) resolving cleanly onto decoupled routes.
-3. **Optimized Resiliency:** `pg` pool incorporates a `connectionTimeoutMillis: 10000` catch specifically to handle Neon Serverless cold starts seamlessly.
