@@ -220,21 +220,47 @@ class OrderController {
 
   /**
    * GET /orders
-   * Returns all orders for the authenticated user (newest first).
+   * Returns all orders for the authenticated user (newest first),
+   * including brief item info for each order.
    */
   async getOrders(req, res, next) {
     try {
       const userId = parseInt(req.query.user_id, 10);
 
       const result = await this.db.query(
-        `SELECT id, address_id, subtotal, tax, total, status, placed_at, updated_at
-         FROM orders
-         WHERE user_id = $1
-         ORDER BY placed_at DESC`,
+        `SELECT 
+          o.id, 
+          o.address_id, 
+          o.subtotal, 
+          o.tax, 
+          o.total, 
+          o.status, 
+          o.placed_at, 
+          o.updated_at,
+          COALESCE(
+            json_agg(
+              json_build_object(
+                'id', oi.id,
+                'product_id', oi.product_id,
+                'name', p.name,
+                'quantity', oi.quantity,
+                'unit_price', oi.unit_price,
+                'line_total', oi.line_total,
+                'images', p.images
+              )
+            ) FILTER (WHERE oi.id IS NOT NULL),
+            '[]'
+          ) AS items
+         FROM orders o
+         LEFT JOIN order_items oi ON o.id = oi.order_id
+         LEFT JOIN products p ON p.id = oi.product_id
+         WHERE o.user_id = $1
+         GROUP BY o.id
+         ORDER BY o.placed_at DESC`,
         [userId]
       );
 
-      return res.status(200).json({ orders: result.rows });
+      return res.status(200).json({ data: result.rows });
     } catch (err) {
       next(err);
     }

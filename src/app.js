@@ -11,11 +11,14 @@ const cartRoutes     = require('./routes/cart');
 const orderRoutes    = require('./routes/orders');
 const categoryRoutes = require('./routes/categories');
 const addressRoutes  = require('./routes/addresses');
+const searchRoutes   = require('./routes/search');
 
 const app = express();
 
 // ─── Global Middleware ───────────────────────────────────────────────────────
-app.use(cors());
+app.use(cors({
+  origin: "*",
+}));
 app.use(express.json());
 
 if (process.env.NODE_ENV !== 'production') {
@@ -35,6 +38,7 @@ app.use(`${API_PREFIX}/cart`,       cartRoutes);
 app.use(`${API_PREFIX}/orders`,     orderRoutes);
 app.use(`${API_PREFIX}/categories`, categoryRoutes);
 app.use(`${API_PREFIX}/addresses`,  addressRoutes);
+app.use(`${API_PREFIX}/search`,     searchRoutes);
 
 // ─── 404 Handler ─────────────────────────────────────────────────────────────
 app.use((req, res) => {
