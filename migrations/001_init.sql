@@ -3,14 +3,20 @@
 -- Amazon Clone — Full Schema
 -- ============================================================
 
--- order_status ENUM
-CREATE TYPE order_status AS ENUM (
-  'PLACED',
-  'CONFIRMED',
-  'SHIPPED',
-  'DELIVERED',
-  'CANCELLED'
-);
+-- order_status ENUM (Checking existence to prevent errors on re-run)
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'order_status') THEN
+        CREATE TYPE order_status AS ENUM (
+          'PLACED',
+          'CONFIRMED',
+          'SHIPPED',
+          'DELIVERED',
+          'CANCELLED'
+        );
+    END IF;
+END $$;
+
 
 -- users
 CREATE TABLE IF NOT EXISTS users (
